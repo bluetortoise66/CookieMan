@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 /// This class ensures a centralized point for accessing and managing the grid.
 /// </summary>
 [ExecuteAlways]
-public class GridManager : MonoBehaviour
+public partial class GridManager : MonoBehaviour
 {
     private static GridManager _instance;
     public static GridManager Instance => _instance;
@@ -50,24 +50,31 @@ public class GridManager : MonoBehaviour
         tilemap.CompressBounds();
 
         grid = new GameGrid(tilemap.size.x, tilemap.size.y);
-        gridRenderer = new GridRenderer(tilemap.origin);
+        gridRenderer = new GridRenderer(tilemap.origin, grid);
 
         foreach (GridObject gridObject in grid.GetGridObjects())
         {
-            int xPos = gridObject.GetCellPosition().x;
-            int yPos = gridObject.GetCellPosition().y;
+            // Get the coordinate of gridObject
+            int xPos = gridObject.GetCellPosition().X;
+            int yPos = gridObject.GetCellPosition().Y;
 
-            Vector3 objectWorldPosition = gridRenderer.GetWorldPosition(xPos, yPos);
+            // translate the coordinate into world position
+            Vector3 objectWorldPosition = gridRenderer.GetWorldPosition(new GridCell(xPos, yPos));
 
+            // Round coordinate value
             int xVal = Mathf.FloorToInt(objectWorldPosition.x);
             int yVal = Mathf.FloorToInt(objectWorldPosition.y);
 
+            // Get the current tile with provided coordinate
             TileBase tile = tilemap.GetTile(new Vector3Int(xVal, yVal, 0));
 
+            // If there is no tile, continue to the next iteration
             if (tile == null) continue;
 
+            // Get the current tile type
             Type tileType = tile.GetType();
 
+            // Assign tile type into the grid object
             if (tileType == typeof(Wall))
             {
                 gridObject.Type = GridObjectType.Wall;
@@ -93,10 +100,10 @@ public class GridManager : MonoBehaviour
         foreach (GridObject gridObject in gridObjects)
         {
             // Get the translated grid position
-            int cellPosX = gridObject.GetCellPosition().x;
-            int cellPosY = gridObject.GetCellPosition().y;
-            int xPos = (int)gridRenderer.GetWorldPosition(cellPosX, cellPosY).x;
-            int yPos = (int)gridRenderer.GetWorldPosition(cellPosX, cellPosY).y;
+            int cellPosX = gridObject.GetCellPosition().X;
+            int cellPosY = gridObject.GetCellPosition().Y;
+            int xPos = (int)gridRenderer.GetWorldPosition(gridObject.GetCellPosition()).x;
+            int yPos = (int)gridRenderer.GetWorldPosition(gridObject.GetCellPosition()).y;
 
             // Draw a vertical line at the grid position, only on the left side
             Vector3 startVertical = new Vector3(xPos, yPos);
@@ -140,11 +147,11 @@ public class GridManager : MonoBehaviour
         int tilemapHeight = grid.Height;
 
         // Translate the lower right corner of the tilemap to world space
-        Vector3 tileMapEndWorldSpace = gridRenderer.GetWorldPosition(tilemapWidth, tilemapHeight);
+        Vector3 tileMapEndWorldSpace = gridRenderer.GetWorldPosition(new GridCell(tilemapWidth, tilemapHeight));
 
         // Translate the origin (top left corner) of the grid to world space
-        float originWorldSpaceX = gridRenderer.GetWorldPosition(0, 0).x;
-        float originWorldSpaceY = gridRenderer.GetWorldPosition(0, 0).y;
+        float originWorldSpaceX = gridRenderer.GetWorldPosition(new GridCell(0,0)).x;
+        float originWorldSpaceY = gridRenderer.GetWorldPosition(new GridCell(0,0)).y;
 
         // Get the width and height of the tilemap in world space
         float widthWorldSpace = tileMapEndWorldSpace.x;

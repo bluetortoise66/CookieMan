@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Represents an object within a grid, storing its position as a two-dimensional coordinate.
 /// </summary>
@@ -8,20 +6,21 @@ public class GridObject
     /// <summary>
     /// Represents the position of the object within a grid as a two-dimensional integer coordinate.
     /// </summary>
-    private Vector2Int _cellPosition;
+    private GridCell _cellPosition;
+
     /// <summary>
     /// Retrieves the position of the object within the grid as a two-dimensional coordinate.
     /// </summary>
     /// <returns>The position of the object within the grid.</returns>
-    public Vector2Int GetCellPosition() => _cellPosition;
-    
+    public GridCell GetCellPosition() => _cellPosition;
+
     public GridObjectType Type { get; set; } = GridObjectType.Empty;
-    
+
     /// <summary>
     /// Represents an object within a grid with a specific position.
     /// </summary>
     /// <param name="cellPosition">The position of the object within the grid.</param>
-    public GridObject(Vector2Int cellPosition)
+    public GridObject(GridCell cellPosition)
     {
         this._cellPosition = cellPosition;
     }
@@ -36,6 +35,9 @@ public class GridObject
     }
 }
 
+/// <summary>
+/// Represents the type of object in a grid, used to define its role or nature within the grid system.
+/// </summary>
 public enum GridObjectType
 {
     Empty,

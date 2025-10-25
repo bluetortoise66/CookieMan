@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -45,9 +46,85 @@ public class GameGrid
         {
             for (int y = 0; y < _height; y++)
             {
-                Vector2Int cellPosition = new Vector2Int(x, y);
+                GridCell cellPosition = new GridCell(x, y);
                 _gridObjects[x, y] = new GridObject(cellPosition);
             }
         }
     }
+
+    /// <summary>
+    /// Determines whether a given grid cell is valid within the bounds of the game grid.
+    /// </summary>
+    /// <param name="cellToCheck">The grid cell to validate.</param>
+    /// <returns>True if the cell is within the grid bounds; otherwise, false.</returns>
+    public bool IsValidCell(GridCell cellToCheck)
+    {
+        // Check if the cell is within the grid bounds
+        if (cellToCheck.X > _width || cellToCheck.Y > _height) return false;
+        if (cellToCheck.X < 0 || cellToCheck.Y < 0) return false;
+        
+        // If the cell is within the grid bounds, it is valid
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieves the grid cell adjacent to the specified cell in the given direction, ensuring the neighbor cell is within grid bounds.
+    /// </summary>
+    /// <param name="currentCell">The current cell from which to locate the neighbor.</param>
+    /// <param name="direction">The direction in which to search for the neighbor cell.</param>
+    /// <returns>The neighboring grid cell in the specified direction.</returns>
+    /// <exception cref="Exception">Thrown when the specified direction is invalid or the neighbor cell is outside the grid bounds.</exception>
+    public GridCell GetNeighborCell(GridCell currentCell, Direction direction)
+    {
+        GridCell neighborCell;
+
+        switch (direction)
+        {
+            case Direction.Up:
+                neighborCell = new GridCell(currentCell.X, currentCell.Y + 1);
+                break;
+            case Direction.Down:
+                neighborCell = new GridCell(currentCell.X, currentCell.Y - 1);
+                break;
+            case Direction.Left:
+                neighborCell = new GridCell(currentCell.X - 1, currentCell.Y);
+                break;
+            case Direction.Right:
+                neighborCell = new GridCell(currentCell.X + 1, currentCell.Y);
+                break;
+            default:
+                throw new Exception("Invalid direction specified.");
+        }
+        
+        if (!IsValidCell(neighborCell)) throw new Exception("Neighbor Cell is outside of the grid");
+        
+        return neighborCell;
+    }
+}
+
+/// <summary>
+/// Represents a single cell within a two-dimensional grid, defined by its X and Y coordinates.
+/// </summary>
+public readonly struct GridCell
+{
+    public int X { get; }
+    public int Y { get; }
+
+    public GridCell(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}
+
+/// <summary>
+/// Defines possible directions for navigation within a two-dimensional grid.
+/// </summary>
+public enum Direction
+{
+    Up,
+    Down,
+    Left,
+    Right,
+    Invalid
 }
