@@ -87,20 +87,26 @@ public class PlayerMovement : MonoBehaviour
     /// <returns>A Vector3 representing the next target position. Returns the current position if there is no valid movement possible.</returns>
     private Vector3 GetTarget(Vector2 vector2)
     {
-        // Perform a raycast to see if there is a tile in the way
-        RaycastHit2D hit = Physics2D.Raycast(
-            transform.position, movementDirection,
-            Mathf.Infinity, LayerMask.GetMask("Tilemap"));
-
-        // return transform.position means the player needs to stay in the same position (stop moving)
-        // if there is no tile in the way, stop moving
-        if (hit.collider == null)
-        {
-            return transform.position;
-        }
-
+        // // Perform a raycast to see if there is a tile in the way
+        // RaycastHit2D hit = Physics2D.Raycast(
+        //     transform.position, movementDirection,
+        //     Mathf.Infinity, LayerMask.GetMask("Tilemap"));
+        //
+        // // return transform.position means the player needs to stay in the same position (stop moving)
+        // // if there is no tile in the way, stop moving
+        // if (hit.collider == null)
+        // {
+        //     return transform.position;
+        // }
+        //
+        // // If the player is far from the tilemap edge, get the neighbor position
+        // if (Vector2.Distance(transform.position, hit.point) > grid.GetGridSize())
+        // {
+        //     return grid.GetNeighborPositionFromDirVector(transform.position, movementDirection);
+        // }
+        
         // If the player is far from the tilemap edge, get the neighbor position
-        if (Vector2.Distance(transform.position, hit.point) > grid.GetGridSize())
+        if (grid.IsNeighborCellWalkable(transform.position, movementDirection))
         {
             return grid.GetNeighborPositionFromDirVector(transform.position, movementDirection);
         }

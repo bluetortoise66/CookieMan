@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 /// <summary>
 /// Represents a two-dimensional game grid, managing its dimensions and the objects placed within.
@@ -76,8 +75,8 @@ public class GameGrid
     /// <exception cref="Exception">Thrown when the specified direction is invalid or the neighbor cell is outside the grid bounds.</exception>
     public GridCell GetNeighborCell(GridCell currentCell, Direction direction)
     {
+        // Check if the specified direction is valid
         GridCell neighborCell;
-
         switch (direction)
         {
             case Direction.Up:
@@ -96,9 +95,20 @@ public class GameGrid
                 throw new Exception("Invalid direction specified.");
         }
         
+        // If not, throw an exception
         if (!IsValidCell(neighborCell)) throw new Exception("Neighbor Cell is outside of the grid");
         
         return neighborCell;
+    }
+
+    /// <summary>
+    /// Retrieves the grid object located at the specified grid cell.
+    /// </summary>
+    /// <param name="cell">The grid cell from which to retrieve the object.</param>
+    /// <returns>The grid object at the specified grid cell.</returns>
+    public GridObject GetGridObject(GridCell cell)
+    {
+        return _gridObjects[cell.X, cell.Y];
     }
 }
 

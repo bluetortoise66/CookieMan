@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -68,22 +67,27 @@ public partial class GridManager : MonoBehaviour
             // Get the current tile with provided coordinate
             TileBase tile = tilemap.GetTile(new Vector3Int(xVal, yVal, 0));
 
-            // If there is no tile, continue to the next iteration
-            if (tile == null) continue;
-
-            // Get the current tile type
-            Type tileType = tile.GetType();
-
-            // Assign tile type into the grid object
-            if (tileType == typeof(Wall))
+            if (tile != null)
             {
                 gridObject.Type = GridObjectType.Wall;
             }
-
-            if (tileType == typeof(Path))
-            {
-                gridObject.Type = GridObjectType.Path;
-            }
+            
+            // // If there is no tile, continue to the next iteration
+            // if (tile == null) continue;
+            //
+            // // Get the current tile type
+            // Type tileType = tile.GetType();
+            //
+            // // Assign tile type into the grid object
+            // if (tileType == typeof(Wall))
+            // {
+            //     gridObject.Type = GridObjectType.Wall;
+            // }
+            //
+            // if (tileType == typeof(Path))
+            // {
+            //     gridObject.Type = GridObjectType.Path;
+            // }
         }
     }
 

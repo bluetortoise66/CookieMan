@@ -7,7 +7,7 @@ public class GridObject
     /// Represents the position of the object within a grid as a two-dimensional integer coordinate.
     /// </summary>
     private GridCell _cellPosition;
-
+    
     /// <summary>
     /// Retrieves the position of the object within the grid as a two-dimensional coordinate.
     /// </summary>
