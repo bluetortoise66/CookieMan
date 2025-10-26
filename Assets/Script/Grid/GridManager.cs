@@ -50,7 +50,7 @@ public partial class GridManager : MonoBehaviour
         tilemap.CompressBounds();
 
         grid = new GameGrid(tilemap.size.x, tilemap.size.y);
-        gridRenderer = new GridRenderer(tilemap.origin);
+        gridRenderer = new GridRenderer(tilemap.origin, grid);
 
         // Populate the grid with grid objects based on the tilemap
         foreach (GridObject gridObject in grid.GetGridObjects())

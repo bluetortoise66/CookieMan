@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -7,12 +8,22 @@ using UnityEngine;
 public class GridRenderer
 {
     private Vector3 _origin;
-    public GridRenderer(Vector3 origin)
+    private GameGrid _grid;
+    /// <summary>
+    /// Responsible for rendering and managing grid positions in a game world.
+    /// Provides functionality for converting between grid coordinates and world positions
+    /// as well as determining grid-related attributes such as cell adjacency and movement directions.
+    /// </summary>
+    /// <param name="origin">The origin point for the grid in world space.</param>
+    /// <param name="grid">The grid to be rendered.</param>
+    public GridRenderer(Vector3 origin, GameGrid grid)
     {
         _origin = origin;
+        _grid = grid;
     }
     
     private float gridSize = 1.0f;
+    public float GridSize() => gridSize;
 
     /// <summary>
     /// Converts a grid cell to its corresponding world position in the scene.
@@ -23,8 +34,44 @@ public class GridRenderer
     {
         return new Vector3(cell.X, cell.Y, 0) + _origin;
     }
-    
 
+    /// <summary>
+    /// Calculates the center position of a specific grid cell in world space.
+    /// The center is determined based on the world position of the cell and the grid size.
+    /// </summary>
+    /// <param name="cell">The grid cell for which the center position is to be calculated.</param>
+    /// <returns>The world-space position representing the center of the specified grid cell as a Vector3.</returns>
+    public Vector3 GetCellCenter(GridCell cell)
+    {
+        // Get the center of the cell in world space
+        return GetWorldPosition(cell) + new Vector3(gridSize / 2, gridSize / 2, 0);
+    }
+
+    /// <summary>
+    /// Retrieves the grid cell corresponding to a given world position, relative to the grid's origin.
+    /// </summary>
+    /// <param name="worldPosition">The position in world space for which the corresponding grid cell is to be determined.</param>
+    /// <returns>The grid cell that corresponds to the provided world position.</returns>
+    /// <exception cref="System.Exception">Thrown when the calculated grid cell is not valid according to the grid's boundaries.</exception>
+    public GridCell GetCell(Vector3 worldPosition)
+    {
+        // Get local cell position from the world position 
+        Vector3 originReverted = worldPosition - _origin;
+        
+        // Get the corresponding grid cell
+        GridCell cellCandidate = new GridCell(Mathf.FloorToInt(originReverted.x), Mathf.FloorToInt(originReverted.y));
+        
+        // If the grid says it's a valid cell, return it
+        if (!_grid.IsValidCell(cellCandidate)) throw new Exception("Invalid cell position");
+        
+        return cellCandidate;
+    }
+
+    /// <summary>
+    /// Calculates the grid coordinates from a given world position relative to the grid origin.
+    /// </summary>
+    /// <param name="worldPosition">The world position for which grid coordinates are to be calculated.</param>
+    /// <returns>The grid coordinates as a Vector3 relative to the grid origin.</returns>
     private Vector3 GetPosInGridCoordinates(Vector3 worldPosition)
     {
         return worldPosition - _origin;
@@ -35,7 +82,7 @@ public class GridRenderer
     /// </summary>
     /// <param name="directionVector">A Vector2 representing the direction to be evaluated.</param>
     /// <returns>A Direction enum value corresponding to the provided direction vector.</returns>
-    private Direction GetDirectionFromVector(Vector2 directionVector)
+    public Direction GetDirectionFromVector(Vector2 directionVector)
     {
         if (directionVector == Vector2.up) return Direction.Up;
         if (directionVector == Vector2.down) return Direction.Down;

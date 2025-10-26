@@ -176,10 +176,10 @@ public class PlayerMovement : MonoBehaviour
         // If the player is allowed to move in the provided direction, get the neighbor position
         if (grid.IsNeighborCellWalkable(transform.position, direction))
         {
-            return grid.GetNeighborPositionFromDirVector(transform.position, direction);
+            return grid.GetNeighborPosition(transform.position, direction);
         }
 
         // Otherwise, return the current cell position
-        return grid.GetCurrentCellPosition(transform.position);
+        return grid.GetCellPosition(transform.position);
     }
 }
