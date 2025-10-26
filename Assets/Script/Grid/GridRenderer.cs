@@ -72,4 +72,48 @@ public class GridRenderer
     {
         return GetWorldPosition(cell) + new Vector3(gridSize / 2, gridSize / 2, 0);
     }
+
+    /// <summary>
+    /// Converts a world position to grid coordinates relative to the grid's origin point.
+    /// </summary>
+    /// <param name="worldPosition">The position in world space to be converted.</param>
+    /// <returns>The corresponding coordinates in grid space as a Vector3.</returns>
+    public Vector3 GetPosInGridCoordinates(Vector3 worldPosition)
+    {
+        return worldPosition - _origin;
+    }
+
+    /// <summary>
+    /// Determines whether a given position in the grid has reached the center of a cell
+    /// in the specified movement direction.
+    /// </summary>
+    /// <param name="direction">The direction of movement as a 2D vector.</param>
+    /// <param name="currentPosition">The current position in world space.</param>
+    /// <returns>True if the current position has reached the cell center in the given direction; otherwise, false.</returns>
+    public bool HasReachedCellCenterInDirection(Vector2 direction, Vector3 currentPosition)
+    {
+        // Convert the direction vector to a Direction enum value
+        Direction directionInEnum = GetDirectionFromVector(direction);
+        
+        // Get the position in grid coordinates
+        Vector3 posInGridCoordinates = GetPosInGridCoordinates(currentPosition);
+        
+        // Calculate the distance from the cell center to the current position
+        float xDistanceFromCellStart = posInGridCoordinates.x - Mathf.Floor(posInGridCoordinates.x); 
+        float yDistanceFromCellStart = posInGridCoordinates.y - Mathf.Floor(posInGridCoordinates.y);
+
+        // Calculate the distance to the cell center in the given direction
+        float distanceToCenter = gridSize / 2;
+
+        // Compare the distance to the cell center with the distance from the current position
+        // to the cell center in the given direction
+        switch (directionInEnum)
+        {
+            case Direction.Up: return (yDistanceFromCellStart >= distanceToCenter);
+            case Direction.Down: return (yDistanceFromCellStart <= distanceToCenter);
+            case Direction.Left: return (xDistanceFromCellStart >= distanceToCenter);
+            case Direction.Right: return (xDistanceFromCellStart <= distanceToCenter);
+            default: return false;
+        }
+    }
 }

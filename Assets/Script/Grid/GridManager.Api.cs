@@ -51,4 +51,27 @@ public partial class GridManager
         // Get the neighbor cell in the requested direction
         return grid.GetNeighborCell(currentCell, dir);
     }
+
+    /// <summary>
+    /// Determines if the current position of an object has reached the center of a grid cell
+    /// in the specified direction.
+    /// </summary>
+    /// <param name="direction">The direction vector indicating the movement direction toward the cell center.</param>
+    /// <param name="currentPosition">The current world position of the object on the grid.</param>
+    /// <returns>True if the object has reached the center of the cell in the specified direction; otherwise, false.</returns>
+    public bool HasReachedCellCenterInDirection(Vector2 direction, Vector3 currentPosition)
+    {
+        return gridRenderer.HasReachedCellCenterInDirection(direction, currentPosition);
+    }
+
+    /// <summary>
+    /// Calculates and returns the center position of the current grid cell based on the provided world position.
+    /// </summary>
+    /// <param name="currentPosition">The world position of the object within the grid.</param>
+    /// <returns>A Vector3 representing the center position of the current grid cell.</returns>
+    public Vector3 GetCurrentCellPosition(Vector3 currentPosition)
+    {
+        GridCell cell = gridRenderer.GetCellFromWorldPosition(currentPosition);
+        return gridRenderer.GetCellCenter(cell);
+    }
 }
