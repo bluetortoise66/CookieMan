@@ -62,3 +62,12 @@ public readonly struct GridCell
         Y = y;
     }
 }
+
+public enum Direction
+{
+    Up,
+    Down,
+    Left,
+    Right,
+    Invalid
+}

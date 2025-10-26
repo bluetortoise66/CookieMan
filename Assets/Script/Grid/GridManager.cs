@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 /// This class ensures a centralized point for accessing and managing the grid.
 /// </summary>
 [ExecuteAlways]
-public class GridManager : MonoBehaviour
+public partial class GridManager : MonoBehaviour
 {
     private static GridManager _instance;
     public static GridManager Instance => _instance;
