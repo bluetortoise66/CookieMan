@@ -4,20 +4,20 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 3f;
-    
     private bool isPlayerMoving = false;
     private Vector2 moveTarget;
     private Vector2 currentInputDirection;
     private Vector2 previousInputDirection;
-
-    private float playerSize;
-
     private GridManager grid;
 
     private void Start()
     {
-        playerSize = GetComponent<SpriteRenderer>().bounds.size.x;
         grid = GridManager.Instance;
+
+        previousInputDirection = Vector2.right;
+        currentInputDirection = Vector2.right;
+        
+        isPlayerMoving = true;
     }
 
     private void Update()
@@ -65,14 +65,12 @@ public class PlayerMovement : MonoBehaviour
         // So on the next method call, this if statement will be ignored
         if (context.phase == InputActionPhase.Started)
         {
-            isPlayerMoving = true;
             return;
         }
 
         // Same as above, but for when the button is released
         if (context.phase == InputActionPhase.Canceled)
         {
-            isPlayerMoving = false;
             return;
         }
 
