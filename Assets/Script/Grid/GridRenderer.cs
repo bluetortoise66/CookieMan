@@ -14,13 +14,12 @@ public class GridRenderer
     }
 
     /// <summary>
-    /// Calculates the world position based on grid coordinates and the origin point.
+    /// Converts a grid cell to its corresponding world position in the scene.
     /// </summary>
-    /// <param name="x">The x-coordinate of the grid position.</param>
-    /// <param name="y">The y-coordinate of the grid position.</param>
-    /// <returns>The corresponding world position as a Vector3.</returns>
-    public Vector3 GetWorldPosition(int x, int y)
+    /// <param name="cell">The grid cell to be converted to world position.</param>
+    /// <returns>The world position of the specified grid cell as a Vector3.</returns>
+    public Vector3 GetWorldPosition(GridCell cell)
     {
-        return new Vector3(x, y, 0) + _origin;
+        return new Vector3(cell.X, cell.Y, 0) + _origin;
     }
 }

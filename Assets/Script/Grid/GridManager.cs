@@ -52,22 +52,26 @@ public class GridManager : MonoBehaviour
         grid = new GameGrid(tilemap.size.x, tilemap.size.y);
         gridRenderer = new GridRenderer(tilemap.origin);
 
+        // Populate the grid with grid objects based on the tilemap
         foreach (GridObject gridObject in grid.GetGridObjects())
         {
-            int xPos = gridObject.GetCellPosition().x;
-            int yPos = gridObject.GetCellPosition().y;
+            // Get the world position of the cell position in grid objects
+            Vector3 objectWorldPosition = gridRenderer.GetWorldPosition(gridObject.GetCellPosition());
 
-            Vector3 objectWorldPosition = gridRenderer.GetWorldPosition(xPos, yPos);
-
+            // Get the tile at the world position of the grid object
             int xVal = Mathf.FloorToInt(objectWorldPosition.x);
             int yVal = Mathf.FloorToInt(objectWorldPosition.y);
 
+            // Get the tile from the provided cell position
             TileBase tile = tilemap.GetTile(new Vector3Int(xVal, yVal, 0));
 
+            // If the tile is null, continue to the next grid object
             if (tile == null) continue;
 
+            // Get the type of the tile from the tile object
             Type tileType = tile.GetType();
 
+            // Set the type of the grid object based on the tile type
             if (tileType == typeof(Wall))
             {
                 gridObject.Type = GridObjectType.Wall;
@@ -92,11 +96,15 @@ public class GridManager : MonoBehaviour
 
         foreach (GridObject gridObject in gridObjects)
         {
-            // Get the translated grid position
-            int cellPosX = gridObject.GetCellPosition().x;
-            int cellPosY = gridObject.GetCellPosition().y;
-            int xPos = (int)gridRenderer.GetWorldPosition(cellPosX, cellPosY).x;
-            int yPos = (int)gridRenderer.GetWorldPosition(cellPosX, cellPosY).y;
+            // Get the cell position of the grid object
+            GridCell currentCell = gridObject.GetCellPosition();
+            
+            // Get the world position from the cell position
+            Vector3 cellWorldPosition = gridRenderer.GetWorldPosition(gridObject.GetCellPosition());
+
+            // Get the X and Y positions of the cell world position
+            int xPos = (int)cellWorldPosition.x;
+            int yPos = (int)cellWorldPosition.y;
 
             // Draw a vertical line at the grid position, only on the left side
             Vector3 startVertical = new Vector3(xPos, yPos);
@@ -121,17 +129,20 @@ public class GridManager : MonoBehaviour
             // Draw the text at the center of the cell
             Vector3 cellCenter = new Vector3(xPos + 0.5f, yPos + 0.5f);
 
+            // Draw the text based on the type of the grid object
             switch (gridObject.Type)
             {
                 case GridObjectType.Wall:
                     Handles.Label(cellCenter, "wall", wallTextStyle);
                     break;
-                // case GridObjectType.Path:
-                //     Handles.Label(cellCenter, "path", emptyTextStyle);
-                //     break;
-                default:
-                    Handles.Label(cellCenter, $"({cellPosX}, {cellPosY})", emptyTextStyle);
+                case GridObjectType.Path:
+                    // Handles.Label(cellCenter, "path", emptyTextStyle);
+                    Handles.Label(cellCenter, $"({currentCell.X}, {currentCell.Y})", emptyTextStyle);
                     break;
+                case GridObjectType.Empty:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -140,15 +151,16 @@ public class GridManager : MonoBehaviour
         int tilemapHeight = grid.Height;
 
         // Translate the lower right corner of the tilemap to world space
-        Vector3 tileMapEndWorldSpace = gridRenderer.GetWorldPosition(tilemapWidth, tilemapHeight);
+        Vector3 firstCellWorldSpace = gridRenderer.GetWorldPosition(new GridCell(0, 0));
+        Vector3 lastCellWorldSpace = gridRenderer.GetWorldPosition(new GridCell(tilemapWidth, tilemapHeight));;
 
         // Translate the origin (top left corner) of the grid to world space
-        float originWorldSpaceX = gridRenderer.GetWorldPosition(0, 0).x;
-        float originWorldSpaceY = gridRenderer.GetWorldPosition(0, 0).y;
+        float originWorldSpaceX = firstCellWorldSpace.x;
+        float originWorldSpaceY = firstCellWorldSpace.y;
 
         // Get the width and height of the tilemap in world space
-        float widthWorldSpace = tileMapEndWorldSpace.x;
-        float heightWorldSpace = tileMapEndWorldSpace.y;
+        float widthWorldSpace = lastCellWorldSpace.x;
+        float heightWorldSpace = lastCellWorldSpace.y;
 
         // Because every cell only draws a line on the left and top side,
         // we need to draw a line on the right and bottom side of the grid
@@ -163,11 +175,20 @@ public class GridManager : MonoBehaviour
 
 #endif
 
+    /// <summary>
+    /// Regenerates the grid by reinitializing it based on the current state of the tilemap.
+    /// This method compresses the tilemap bounds, recreates the grid structure, and populates it
+    /// with grid objects that are updated according to the tile types present on the tilemap.
+    /// </summary>
     public void RegenerateGrid()
     {
         InitializeGrid();
     }
 
+    /// <summary>
+    /// Toggles the visibility state of the grid.
+    /// This method inverts the current visibility status, effectively showing or hiding the grid based on its previous state.
+    /// </summary>
     public void ToggleVisibility()
     {
         isGridVisible = !isGridVisible;

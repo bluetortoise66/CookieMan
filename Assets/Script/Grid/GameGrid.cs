@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Represents a two-dimensional game grid, managing its dimensions and the objects placed within.
 /// </summary>
@@ -7,18 +5,10 @@ public class GameGrid
 {
     private int _width;
     private int _height;
-    /// <summary>
-    /// A 2D array representing the objects placed in the grid.
-    /// Stores instances of GridObject mapped to their grid positions.
-    /// </summary>
-    private GridObject[,] _gridObjects;
-
     public int Height => _height;
     public int Width => _width;
-    /// <summary>
-    /// Retrieves a two-dimensional array containing all grid objects placed within the grid.
-    /// </summary>
-    /// <returns>A 2D array of grid objects representing the current state of the grid.</returns>
+
+    private GridObject[,] _gridObjects;
     public GridObject[,] GetGridObjects() => _gridObjects;
 
     /// <summary>
@@ -45,9 +35,30 @@ public class GameGrid
         {
             for (int y = 0; y < _height; y++)
             {
-                Vector2Int cellPosition = new Vector2Int(x, y);
+                GridCell cellPosition = new GridCell(x, y);
                 _gridObjects[x, y] = new GridObject(cellPosition);
             }
         }
+    }
+}
+
+
+/// <summary>
+/// Represents a single cell within a grid, identified by its X and Y coordinates.
+/// </summary>
+public readonly struct GridCell
+{
+    public int X { get; }
+    public int Y { get; }
+
+    /// <summary>
+    /// Represents a single cell within a grid, identified by its X and Y coordinates.
+    /// </summary>
+    /// <param name="x">The X coordinate of the cell.</param>
+    /// <param name="y">The Y coordinate of the cell.</param>
+    public GridCell(int x, int y)
+    {
+        X = x;
+        Y = y;
     }
 }
