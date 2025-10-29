@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 currentInputDirection;
     private Vector2 previousInputDirection;
     private GridManager grid;
+
+    public event Action<Vector2> OnDirectionChanged;
 
     private void Start()
     {
@@ -83,6 +86,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Check player direction
         HandleDirectionSwitch(newDirection);
+        
+        OnDirectionChanged?.Invoke(newDirection);
     }
 
     /// <summary>
