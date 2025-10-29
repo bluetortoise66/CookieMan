@@ -1,8 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerAnimator : MonoBehaviour
 {
+    private static readonly int MoveX = Animator.StringToHash("MoveX");
+    private static readonly int MoveY = Animator.StringToHash("MoveY");
     private Animator animator;
     private PlayerMovement player;
 
@@ -24,7 +25,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void HandleDirectionState(Vector2 direction)
     {
-        animator.SetInteger("MoveX", (int)direction.x);
-        animator.SetInteger("MoveY", (int)direction.y);
+        animator.SetInteger(MoveX, (int)direction.x);
+        animator.SetInteger(MoveY, (int)direction.y);
     }
 }
